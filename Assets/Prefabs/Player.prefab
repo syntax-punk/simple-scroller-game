@@ -166,7 +166,7 @@ Rigidbody2D:
   m_Mass: 1
   m_LinearDamping: 0
   m_AngularDamping: 0.05
-  m_GravityScale: 1
+  m_GravityScale: 8
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -176,7 +176,7 @@ Rigidbody2D:
     m_Bits: 0
   m_Interpolate: 0
   m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 4
 --- !u!114 &8124768704270595368
 MonoBehaviour:
@@ -220,3 +220,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bb3c3423678fd48b9b0b6534046ae594, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  runSpeed: 6
+  runBoost: 20
+  jumpForce: 20
+  gravity: 1

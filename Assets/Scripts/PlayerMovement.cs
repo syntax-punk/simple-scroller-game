@@ -12,16 +12,21 @@ public class PlayerMovement : MonoBehaviour
     float runBoost = 20f;
 
     [SerializeField]
+    float jumpForce = 5f;
+
+    [SerializeField]
     float gravity = 1f;
 
     private Vector2 _moveInput;
     private Rigidbody2D _rb;
     private Animator _animator;
+    private CapsuleCollider2D _collider;
 
     void Start()
     {
         _rb = GetComponent<Rigidbody2D>();
         _animator = GetComponent<Animator>();
+        _collider = GetComponent<CapsuleCollider2D>();
     }
 
     void Update()
@@ -54,5 +59,17 @@ public class PlayerMovement : MonoBehaviour
     void OnMove(InputValue value)
     {
         _moveInput = value.Get<Vector2>();
+    }
+
+    void OnJump(InputValue value)
+    {
+        var groundLayer = LayerMask.GetMask("Ground");
+
+        if (!_collider.IsTouchingLayers(groundLayer)) return;
+
+        if (value.isPressed)
+        {
+            _rb.linearVelocityY += jumpForce;
+        }
     }
 }
