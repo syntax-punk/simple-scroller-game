@@ -1,6 +1,4 @@
 using System;
-using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -24,6 +22,7 @@ public class PlayerMovement : MonoBehaviour
     private CapsuleCollider2D _bodyCollider;
     private BoxCollider2D _feetCollider;
     private float _gravityScaleAtStart;
+    private bool _isAlive = true;
 
     void Start()
     {
@@ -37,9 +36,12 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
+        if (!_isAlive) return;
+
         Run();
         FlipSprite();
         Climb();
+        Die();
     }
 
     private void Run()
@@ -73,6 +75,14 @@ public class PlayerMovement : MonoBehaviour
         _rb.linearVelocity = climbVelocity;
     }
 
+    private void Die()
+    {
+        if (_bodyCollider.IsTouchingLayers(LayerMask.GetMask("Enemies")))
+        {
+            _isAlive = false;
+        }
+    }
+
     private void FlipSprite()
     {
         var playerIsMovingHorizontally = Mathf.Abs(_moveInput.x) > Mathf.Epsilon;
@@ -93,11 +103,15 @@ public class PlayerMovement : MonoBehaviour
 
     void OnMove(InputValue value)
     {
+        if (!_isAlive) return;
+
         _moveInput = value.Get<Vector2>();
     }
 
     void OnJump(InputValue value)
     {
+        if (!_isAlive) return;
+
         var groundLayer = LayerMask.GetMask("Ground");
 
         if (!_feetCollider.IsTouchingLayers(groundLayer)) return;
