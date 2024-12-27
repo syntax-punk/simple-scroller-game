@@ -16,6 +16,9 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField]
     float climbSpeed = 6f;
 
+    [SerializeField]
+    Vector2 DeathKick = new Vector2(8f, 8f);
+
     private Vector2 _moveInput;
     private Rigidbody2D _rb;
     private Animator _animator;
@@ -23,6 +26,7 @@ public class PlayerMovement : MonoBehaviour
     private BoxCollider2D _feetCollider;
     private float _gravityScaleAtStart;
     private bool _isAlive = true;
+    private CameraShake _cameraShake;
 
     void Start()
     {
@@ -32,6 +36,7 @@ public class PlayerMovement : MonoBehaviour
         _feetCollider = GetComponent<BoxCollider2D>();
 
         _gravityScaleAtStart = _rb.gravityScale;
+        _cameraShake = GetCameraShake();
     }
 
     void Update()
@@ -80,6 +85,12 @@ public class PlayerMovement : MonoBehaviour
         if (_bodyCollider.IsTouchingLayers(LayerMask.GetMask("Enemies")))
         {
             _isAlive = false;
+            _animator.SetTrigger("Dying");
+
+            if (_cameraShake != null)
+                _cameraShake.TriggerShake();
+
+            _rb.linearVelocity = DeathKick;
         }
     }
 
@@ -120,5 +131,20 @@ public class PlayerMovement : MonoBehaviour
         {
             _rb.linearVelocityY += jumpForce;
         }
+    }
+
+    private CameraShake GetCameraShake()
+    {
+        var globalCamera = GameObject.FindWithTag("GlobalCameras");
+
+        if (globalCamera == null)
+        {
+            Debug.LogError("GlobalCameras object not found in the scene");
+            return null;
+        }
+
+        var shake = globalCamera.GetComponent<CameraShake>();
+
+        return shake;
     }
 }
